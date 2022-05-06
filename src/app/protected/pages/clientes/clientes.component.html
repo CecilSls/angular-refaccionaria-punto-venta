@@ -1,0 +1,145 @@
+<h2 class="mx-2">Clientes</h2>
+<p-table #tablaC [value]="clientes" dataKey="id"
+        [resizableColumns]="true" columnResizeMode="expand" styleClass="p-datatable-gridlines" responsiveLayout="scroll"
+        [rows]="3" [showCurrentPageReport]="true" [rowsPerPageOptions]="[3, 6, 12]" [loading]="loading"
+        styleClass="p-datatable-gridlines"
+        [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [globalFilterFields]="['rfc', 'nombre','apellido','telefono', 'direccion', 'email']">
+        <ng-template pTemplate="caption">
+            <div class="flex">
+                <button pButton
+                    (click)="[verModal = true, esEditar = false, formCliente.reset()]"
+                    label="Agregar" class="p-button-submit" icon="pi pi-plus"></button>
+                <!-- <button pButton label="Clear" class="p-button-outlined mx-1" icon="pi pi-filter-slash"></button> -->
+                <span class="p-input-icon-left ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')" placeholder="Buscar..." />
+                </span>
+            </div>
+        </ng-template>
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th pSortableColumn="rfc">
+                <div class="flex justify-content-between align-items-center">
+                    RFC
+                    <p-sortIcon field="rfc"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="nombre">
+                <div class="flex justify-content-between align-items-center">
+                    Nombre
+                    <p-sortIcon field="nombre"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="apellido">
+                <div class="flex justify-content-between align-items-center">
+                    Apellido
+                    <p-sortIcon field="apellido"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="telefono">
+                <div class="flex justify-content-between align-items-center">
+                    Telefono
+                    <p-sortIcon field="telefono"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="direccion">
+                <div class="flex justify-content-between align-items-center">
+                    Direccion
+                    <p-sortIcon field="direccion"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="email">
+                <div class="flex justify-content-between align-items-center">
+                    Email
+                    <p-sortIcon field="email"></p-sortIcon>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-cliente>
+        <tr>
+            <td> {{ cliente.rfc }} </td>
+            <td> {{ cliente.nombre }} </td>
+            <td> {{ cliente.apellido }} </td>
+            <td> {{ cliente.telefono }}</td>
+            <td> {{ cliente.direccion }}</td>
+            <td> {{ cliente.email }}</td>
+            <td>
+                <button pButton pRipple type="button" icon="pi pi-pencil"
+                    (click)="abrirModalEditar(cliente)"
+                    class="p-button-rounded p-button-info mx-1">
+                </button>
+                <button pButton pRipple type="button" icon="pi pi-times"
+                    (click)="msjConfirm(cliente.nombre, cliente.id_cliente)"
+                    class="p-button-rounded p-button-danger mx-1">
+                </button>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="7">No se encontraron clientes.</td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<!-- MODAL de Agregar -->
+<p-dialog [header]="(esEditar) ? 'Editar Usuario' : 'Agregar Usuario'"
+    [(visible)]="verModal" [modal]="true" [style]="{width: '50vw'}"
+    [draggable]="false" [resizable]="false" class="text-center">
+    <form action="" class="grid p-fluid py-5" [formGroup]="formCliente">
+        <div class="field col-11 md:col-6 mx-auto">
+            <span class="p-float-label">
+                <input pInputText  id="rfc" type="text" formControlName="rfc"> 
+                <label for="rfc">RFC</label>
+            </span>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <span class="p-float-label">
+                <input pInputText id="telefono" type="text"
+                    pKeyFilter="num" formControlName="telefono" [maxlength]="10"> 
+                <label for="telefono">Telefono</label>
+            </span>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <span class="p-float-label">
+                <input pInputText  id="nombre" type="text"
+                    [pKeyFilter]="alphaSpace" formControlName="nombre"> 
+                <label for="nombre">Nombre</label>
+            </span>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <span class="p-float-label">
+                <input pInputText  id="apellido" type="text"
+                    [pKeyFilter]="alphaSpace" formControlName="apellido"> 
+                <label for="apellido">Apellido</label>
+            </span>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <span class="p-float-label">
+                <input pInputText  id="direccion" type="text"
+                    [pKeyFilter]="alphaNumericS" formControlName="direccion"> 
+                <label for="direccion">Direccion</label>
+            </span>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <span class="p-float-label">
+                <input pInputText  id="email" type="text"
+                    pKeyFilter="email" formControlName="email"> 
+                <label for="email">Email</label>
+            </span>
+        </div>
+    </form>
+    <ng-template pTemplate="footer" class="mt-5">
+        <p-button icon="pi pi-plus"  label="Agregar" 
+            (click)="agregarCliente()" [disabled]="!formCliente.valid"
+            styleClass="p-button-info" [hidden]="esEditar">
+        </p-button>
+        <p-button icon="pi pi-check" label="Guardar"
+            (click)="editarCliente()" [disabled]="!formCliente.valid"
+            styleClass="p-button-info" [hidden]="!esEditar">
+        </p-button>
+    </ng-template>
+</p-dialog>

@@ -1,1 +1,76 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+    --nav-header-color:#4c759a;
+    --btn-report-color: #306c4d;
+    --btn-report-color-hover: #acf2ce;
+    --btn-text-report-color: #fff;
+    --btn-report-border: 1px solid #1c3b1e;
+    --btn-bg-color-black: #26272B;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body{
+    /* margin: 10px; */
+    background-color: var(--surface-b);
+    font-family: var(--font-family);
+}
+
+.text-layout{
+    color: var(--text-color);
+}
+
+.text-red{
+    color: red !important;
+}
+
+.text-green{
+    color: green !important;
+    font-weight: 600;
+}
+
+.text-blue{
+    color: rgb(99, 99, 221) !important;
+}
+
+/* Color de botones */
+.btn-bg-black{
+    background: var(--btn-bg-color-black) !important;
+}
+.btn-report{
+    background-color: var(--btn-report-color) !important;
+    border: var(--btn-report-border) !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease-in-out !important;
+}
+
+.btn-report:hover{
+    background-color: var(--btn-report-color-hover) !important;
+    color: #000 !important;
+}
+
+/* ========= MODAL CLASES */
+.p-dialog .p-dialog-header {
+    background: #47906b !important;
+    color: #f4f7fa !important;
+    text-align: center;
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-icon {
+    color: #f4f7fa !important;
+    font-weight: bold !important;
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-icon:hover {
+    color: #313131 !important;
+}
+
+/* ================ COLOR INPUT INVALID */
+.p-inputtext.ng-dirty.ng-invalid {
+    border-color: #e24c4c;
+    border-width: revert;
+}

@@ -1,0 +1,114 @@
+{
+    "productos": [
+            {
+                "id_producto": "1",
+                "id_proveedor": "1",
+                "id_marca": "1",
+                "description": "Llanta",
+                "codigo_barras": "AXFDS123",
+                "existencia": "10",
+                "comprado": "0",
+                "precio_compra": "100",
+                "precio_venta": "150",
+                "anaquel": "1",
+                "modulo": "1"
+            }
+        ],
+    "proveedores": [
+        {
+            "id_proveedor": "1",
+            "nombre": "Proveedor 1",
+            "empresa": "Empresa TEST",
+            "telefono": "12345678",
+            "email": "Proveedor@test.com"
+        }        
+    ],
+	"ventas": [
+		{
+			"id_venta": 1,
+			"id_usuario": 1,
+			"venta_fecha": "2022-03-28",
+			"venta_total": 1600,
+			"venta_descuento": 100,
+			"total_pagado": 1500,
+			"recibido": 2000,
+			"cambio": 500,
+			"ticket": "vnt1",
+			"pendiente": 2
+		},
+		{
+			"id_venta": 2,
+			"id_usuario": 1,
+			"venta_fecha": "2022-03-28",
+			"venta_total": 1600,
+			"venta_descuento": 100,
+			"total_pagado": 1500,
+			"recibido": 2000,
+			"cambio": 500,
+			"ticket": "vnt2",
+			"pendiente": 2
+		},
+		{
+			"id_venta": 3,
+			"id_usuario": 1,
+			"venta_fecha": "2022-03-28",
+			"venta_total": 1600,
+			"venta_descuento": 100,
+			"total_pagado": 1500,
+			"recibido": 2000,
+			"cambio": 500,
+			"ticket": "vnt3",
+			"pendiente": 2
+		},
+		{
+			"id_venta": 4,
+			"id_usuario": 1,
+			"venta_fecha": "2022-03-28",
+			"venta_total": 1600,
+			"venta_descuento": 100,
+			"total_pagado": 1500,
+			"recibido": 2000,
+			"cambio": 500,
+			"ticket": "vnt4",
+			"pendiente": 2
+		},
+		{
+			"id_venta": 5,
+			"id_usuario": 1,
+			"venta_fecha": "2022-03-28",
+			"venta_total": 1600,
+			"venta_descuento": 100,
+			"total_pagado": 1500,
+			"recibido": 2000,
+			"cambio": 500,
+			"ticket": "vnt5",
+			"pendiente": 2
+		},
+		{
+			"id_venta": 6,
+			"id_usuario": 1,
+			"venta_fecha": "2022-03-28",
+			"venta_total": 1600,
+			"venta_descuento": 100,
+			"total_pagado": 1500,
+			"recibido": 2000,
+			"cambio": 500,
+			"ticket": "vnt6",
+			"pendiente": 2
+		},
+		{
+			"id_venta": 7,
+			"id_usuario": 1,
+			"venta_fecha": "2022-03-28",
+			"venta_total": 1600,
+			"venta_descuento": 100,
+			"total_pagado": 1500,
+			"recibido": 2000,
+			"cambio": 500,
+			"ticket": "vnt7",
+			"pendiente": 2
+		}
+	]
+    
+    
+}

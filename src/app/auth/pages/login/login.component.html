@@ -1,0 +1,30 @@
+
+<div class="flex align-items-center justify-content-center">
+        <div class="border-round bg-blue-100 w-20rem p-3 m-3 scalein animation-delay-200 animation-duration-500">       
+                <p-card header="Inicio de sesion" class="mx-auto p-3 text-center">
+                        <ng-template pTemplate="header">
+                                <img alt="Card" src="assets/img/logo.jpg" class="p-4">
+                        </ng-template>
+                        <form action="" autocomplete="off"
+                                [formGroup]="miFormulario" (ngSubmit)="login()">
+                                <span class="p-input-icon-left my-2">
+                                        <i class="pi pi-user"></i>
+                                        <input type="text" formControlName="username" pInputText>
+                                </span>
+                                
+                                <span class="p-input-icon-left my-2">
+                                        <i class="pi pi-key"></i>
+                                        <input type="password" formControlName="password" pInputText>
+                                </span>
+                                <div class="flex justify-content-center">
+                                        <button pButton type="submit" 
+                                                class="mx-auto mt-4" iconPos="right"
+                                                [label]="loading ? 'Cargando...' : 'Iniciar Sesion'"
+                                                [disabled]="miFormulario.invalid"
+                                                [loading]="loading">
+                                        </button>
+                                </div>
+                        </form>
+                </p-card>
+        </div>
+</div>

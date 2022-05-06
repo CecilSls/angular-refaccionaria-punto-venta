@@ -1,0 +1,34 @@
+<div class="d-flex m-4">
+    <div class="grid w-full mb-2">
+        <h1>Generar corte de caja:</h1>
+    </div>
+    <p-divider></p-divider>
+    <div class="grid w-full p-fluid">
+        <div class="field col-12 md:col-4">
+            <p-calendar [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" inputId="range"></p-calendar>
+        </div>
+        <div class="field col-12 md:col-4">
+            <p-button label="Generar" (onClick)="abrirCorteDeCaja()"
+                icon="pi pi-file-pdf" iconPos="right">                
+            </p-button>
+        </div>
+    </div>
+</div>
+<p-divider></p-divider>
+<div class="d-flex m-4">
+    <div class="grid w-full mb-2">
+        <h1>Reporte de productos faltantes:</h1>
+        <h4>Este reporte visualizara unicamente los productos que tengan como <span class="text-red">CANTIDAD EN EXISTENCIA MENOR </span>
+            que el <span class="text-blue">STOCK MINIMO</span></h4>
+    </div>
+    <div class="grid w-full p-fluid">
+        <div class="field col-12 md:col-4">
+            <p-button label="Generar" (onClick)="abrirReporte()"
+                icon="pi pi-file-pdf" iconPos="right">
+            </p-button>
+        </div>
+    </div>
+</div>
+
+<!-- ============= TOAST MESSAGE ============= -->
+<p-toast position="bottom-center"></p-toast>

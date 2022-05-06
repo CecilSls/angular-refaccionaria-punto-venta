@@ -1,0 +1,99 @@
+<div class="grid w-full mt-2">
+    <div class="card">          
+        <div class="col-11 md:col-11 mx-auto mb-5 ">
+            <label><h4>Ingresa el ticket de venta:</h4></label>
+            <span class="p-input-icon-right mt-2">
+                <i [classList]="(buscando) ? 'pi pi-spin pi-spinner' : ''"></i>
+                <input type="text" pInputText pInputText placeholder="#Ticket"                    
+                ngModel pattern="[a-zA-Z0-9]*" pKeyFilter="alphanum"
+                [disabled]="buscando" [autocomplete]="false" class="uppercase"
+                (keyup.enter)="buscarTicket();" #txtTicket/>
+            </span>
+        </div>    
+    </div>
+</div>
+
+<div class="grid w-full px-2">
+    <div class="md:col-4"  [hidden]="!siExiste">
+        <h2>#Ticket: {{ ventaActual?.ticket || '--' }}</h2>
+    </div>   
+    <div class="md:col-4" [hidden]="!siExiste">
+        <h2>Total Venta: {{ ventaActual?.venta_total || '0.0' | currency}}</h2>
+    </div>
+    <div class="md:col-4" [hidden]="!siExiste">
+        <h2>Fecha: {{ ventaActual?.venta_fecha || '' | date}}</h2>
+    </div>
+</div>
+
+<div class="grid w-full my-2 px-2">
+    <div class="md:col-5" [hidden]="!siExiste">
+        <h2>Tipo de Venta:</h2>
+    </div>
+    <div class="md:col-3" [hidden]="!siExiste">
+        <p-selectButton [options]="stateOptions" #tipoVenta
+            (onChange)="selectTipoVenta()"
+            [(ngModel)]="text_select"
+            >
+        </p-selectButton>
+    </div>
+    <div class="col-11 md:col-3 mx-auto" [hidden]="!siExiste">
+        <p-autoComplete [suggestions]="results"
+            (completeMethod)="buscarCliente($event)"
+            (onSelect)="selectCliente($event)"
+            placeholder="Cliente"
+            #selectInput
+            [hidden]="!aCredito">
+        </p-autoComplete>
+    </div>
+</div>
+
+<div [hidden]="!siExiste">
+    <form action="" class="grid w-full mt-2"[formGroup]="ventaForm">
+        <div class="col-11 md:col-3 mx-auto" >
+            <label>Total a pagar:</label>
+            <div class="p-inputgroup">
+                <input pInputText formControlName="total_pagado"
+                    pKeyFilter="num"
+                    (input)="calcularCambio()"/>
+            </div>
+        </div>
+        <div class="col-11 md:col-3 mx-auto">
+            <label>{{ (aCredito) ? 'Abono' : 'Recibido' }}</label>
+            <div class="p-inputgroup">
+                <input pInputText pKeyFilter="num"
+                    formControlName="recibido" (input)="calcularCambio()" />
+            </div>
+        </div>
+        <div class="col-11 md:col-3 mx-auto" [hidden]="tipoVenta.value == 1">
+            <label>Cambio</label>
+            <div class="p-inputgroup" >
+                <p-inputNumber formControlName="cambio" [readonly]="true"
+                    inputId="currency-us" mode="currency" currency="USD" locale="en-US">
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="col-12 md:col-12 text-center">
+            <button pButton label="Realizar venta"
+                class="mx-auto" (click)="saveVenta()"
+                [disabled]="!procedeCobro">
+            </button>
+        </div>
+    </form>
+</div>
+
+<p-table [value]="productosVenta" [hidden]="!siExiste">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Nombre</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-producto>
+        <tr>
+            <td>{{producto.description | uppercase}}</td>
+            <td>{{producto.cantidad | number}}</td>
+            <td>{{producto.precio_venta | currency}}</td>
+        </tr>
+    </ng-template>
+</p-table>

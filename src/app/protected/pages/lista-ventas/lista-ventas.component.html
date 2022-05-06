@@ -1,0 +1,86 @@
+<h1 class="mx-2">Lista de ventas:</h1>
+<p-table #dt2 [value]="ventas" dataKey="id" [rows]="5"
+        [showCurrentPageReport]="true" [rowsPerPageOptions]="[5, 10, 15]"
+        [loading]="loading" styleClass="p-datatable-gridlines" [paginator]="true"
+        [resizableColumns]="true" columnResizeMode="expand" styleClass="p-datatable-gridlines" responsiveLayout="scroll"
+        styleClass="p-datatable-gridlines"
+        currentPageReportTemplate="Mostrando {last} de un total de {totalRecords} registros"
+        [globalFilterFields]="['ticket','nombre','pendiente','status']">
+        <ng-template pTemplate="caption">
+            <div class="flex">
+                <span class="p-input-icon-left ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" placeholder="Buscar..." (input)="applyFilterGlobal($event, 'contains')" />
+                </span>
+            </div>
+        </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+            <th>
+                <div class="flex justify-content-center align-items-center">
+                    # Ticket
+                    <p-columnFilter type="text" field="ticket" display="menu" [matchMode]="'contains'" ></p-columnFilter>
+                </div>
+            </th>
+            <th pSortableColumn="venta_fecha">
+                <div class="flex justify-content-between align-items-center">
+                    Fecha
+                    <p-sortIcon field="venta_fecha"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="total_pagado">
+                <div class="flex justify-content-between align-items-center">
+                    Total Vendido
+                    <p-sortIcon field="total_pagado"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="nombre">
+                <div class="flex justify-content-between align-items-center">
+                    Usuario
+                    <p-sortIcon field="nombre"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="pendiente">
+                <div class="flex justify-content-between align-items-center">
+                    Pendiente
+                    <p-sortIcon field="pendiente"></p-sortIcon>
+                </div>
+            </th>
+            <th>Ticket</th>
+            <th>Cancelar</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-venta>
+        <tr [classList]="( venta.pendiente == 4 ) && 'text-red' ||  
+                            ( venta.pendiente == 2 ) && 'text-blue' ||
+                            ( venta.pendiente == 1 ) && 'text-green' ">
+            <td>{{venta.ticket}}</td>
+            <td>{{venta.venta_fecha | date: 'MM/dd/yyyy'}}</td>
+            <td>{{ venta.venta_total || '0' | currency }}</td>
+            <td>{{venta.nombre}}</td>
+            <td>
+                {{ ( venta.pendiente == 1 ) && "Si" || 
+                    ( venta.pendiente == 3) && "Credito" ||
+                    ( venta.pendiente == 4) && "Cancelado" || "No" }}
+            </td>
+            <td>
+                <button pButton pRipple type="button"
+                    icon="pi pi-file-pdf" (click)="imprimirTicket(venta.ticket)"
+                    class="p-button-rounded p-button-text">
+                </button>   
+            </td>
+            <td [hidden]="(venta.pendiente != 1 ) ? true : false">
+                <button pButton pRipple type="button"
+                    (click)="cancelarVenta(venta)"
+                    icon="pi pi-times-circle"
+                    class="p-button-rounded p-button-text">
+                </button>                    
+            </td><td [hidden]="(venta.pendiente == 1 ) ? true : false">--</td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="7">No se han encontrado ventas.</td>
+        </tr>
+    </ng-template>
+</p-table>

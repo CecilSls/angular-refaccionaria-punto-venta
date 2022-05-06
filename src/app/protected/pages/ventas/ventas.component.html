@@ -1,0 +1,102 @@
+<div class="d-flex px-2">
+    <h1>Nueva venta:</h1>
+</div>
+
+<p-divider></p-divider>
+
+<div class="d-flex px-2 text-center">
+    <h1>Venta total: {{ totalVenta || '0' | currency}}</h1>
+</div>
+<p-divider></p-divider>
+
+<div class="card">
+    <form action="" class="formgrid grid px-2"
+        [autocomplete]="false"
+        [formGroup]="productoForm" (ngSubmit)="$event.preventDefault()">
+        <div class="field col-11 md:col-6 lg:col-3">
+            <span class="p-float-label">
+                <input pInputText pKeyFilter="alphanum" formControlName="codigo_barras"
+                    (input)="searchProducto(1, $event)" pInputText/>
+                <label for="float-input">Codigo de Barras</label>
+            </span>
+        </div>
+        <div class="field col-11 md:col-6 lg:col-3">
+            <span class="p-float-label p-input-icon-right">
+                <i [classList]=" (loading) ? 'pi pi-spin pi-spinner':''"></i>
+                <input pInputText formControlName="description"
+                    (change)="searchProducto(2, $event)"
+                    (input)="[producto_search = null!]"
+                    [pKeyFilter]="rgxAlphaNum" pInputText/>
+                <label for="float-input">Desc. Producto</label>
+            </span>
+        </div>
+        <div class="field col-12 md:col-6 lg:col-3">
+            <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">$</span>
+                <input type="text"  formControlName="precio"
+                    [readonly]="true"
+                    placeholder="Precio" pInputText />
+            </div>
+        </div>
+        <div class="field col-12 md:col-6 lg:col-3">
+            <div class="p-inputgroup">
+                <p-inputNumber
+                    mode="decimal" [showButtons]="true"
+                    (keydown.enter)="addProducto()"
+                    formControlName="cantidad"
+                    type="number" [min]="1" [max]="100">
+                </p-inputNumber>
+            </div>
+        </div>
+        <div class="field col-12 mx-auto px-2">
+            <div class="grid text-center">
+                <div class="col-12 md:col-6">
+                    <button
+                        (click)="addProducto()"
+                        pButton label="Agregar producto" class="mx-auto"
+                        [disabled]="producto_search==null">
+                    </button>
+                </div>
+                <div class="col-12 md:col-6">
+                    <button class="p-button-success" type="button"
+                        (click)="saveVenta()"
+                        pButton label="Guardar Venta"
+                        [disabled]=" !(producto_search == null && productos.length > 0) ">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<p-table [value]="productos">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Codigo</th>
+            <th>Producto</th>
+            <th>Existencia</th>
+            <th>Cantidad</th>
+            <th>Precio Unit.</th>
+            <th>Importe</th>
+            <th>Acciones</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-producto>
+        <tr>
+            <td>{{producto.codigo_barras | uppercase}}</td>
+            <td>{{producto.description }}</td>
+            <td>{{producto.existencia}}</td>
+            <td>{{producto.cantidad}}</td>
+            <td>{{producto.precio | currency}}</td>
+            <td>{{producto.total | currency}}</td>
+            <td>
+                <button pButton pRipple type="button"
+                    icon="pi pi-times" class="p-button-rounded p-button-danger"
+                    (click)="borrarProducto(producto)"></button>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<!-- ============= TOAST MESSAGE ============= -->
+<p-toast position="bottom-center"></p-toast>

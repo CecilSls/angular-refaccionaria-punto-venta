@@ -1,0 +1,211 @@
+<div class="d-flex">
+    <div class="row px-2">
+        <h1>Productos:</h1>
+    </div>
+</div>
+
+<div class="px-2 d-flex">
+    <span class="p-buttonset text-center">
+        <button pButton pRipple label="Reporte 1" icon="pi pi-file-pdf"
+            class="btn-report" (click)="openReport('rpt_productos1.php')"></button>
+        <button pButton pRipple label="Reporte 2" icon="pi pi-file-pdf"
+            class="btn-report" (click)="openReport('rpt_productos2.php')"></button>
+        <button pButton pRipple label="Inventario 1" icon="pi pi-file-pdf" 
+            class="btn-report" (click)="openReport('rpt_inventario1.php')"></button>
+        <button pButton pRipple label="Inventario 2" icon="pi pi-file-pdf"
+            class="btn-report" (click)="openReport('rpt_inventario2.php')"></button>
+    </span>
+</div>
+
+<div class="card">
+    <p-table table #tablaProducto [value]="productos"
+        [rows]="5" [showCurrentPageReport]="true" styleClass="p-datatable-gridlines"
+        [resizableColumns]="true" columnResizeMode="expand" styleClass="p-datatable-gridlines" responsiveLayout="scroll"
+        [rowsPerPageOptions]="[5, 10, 15]" [loading]="loading" [paginator]="true"
+        currentPageReportTemplate="Mostrando {first} de {last} de un total de {totalRecords}"
+        [globalFilterFields]="['codigo_barras','description','marca','proveedor', 'existencia']">
+        <ng-template pTemplate="caption">
+            <div class="flex">
+                <button pButton (click)="showModalAgregar()" label="Agregar"
+                    class="p-button-submit" icon="pi pi-plus">
+                </button>
+                <!-- <button pButton label="Clear" class="p-button-outlined mx-1" icon="pi pi-filter-slash" (click)="clear()"></button> -->
+                <span class="p-input-icon-left ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')" placeholder="Buscar en la tabla" />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>
+                    <div class="flex justify-content-center align-items-center">
+                        Codigo de barras
+                        <p-columnFilter type="text" field="codigo_barras" display="menu"></p-columnFilter>
+                    </div>
+                </th>
+                <th>
+                    <div class="flex justify-content-center align-items-center">
+                        Nombre
+                        <p-columnFilter type="text" field="description" display="menu"></p-columnFilter>
+                    </div>
+                </th>
+                <th>
+                    <div class="flex justify-content-center align-items-center">
+                        Marca
+                        <p-columnFilter type="text" field="marca" display="menu"></p-columnFilter>
+                    </div>
+                </th>
+                <th>
+                    <div class="flex justify-content-center align-items-center">
+                        Proveedor
+                        <p-columnFilter type="text" field="proveedor" display="menu"></p-columnFilter>
+                    </div>
+                </th>
+                <th pSortableColumn="existencia">
+                    <div class="flex justify-content-between align-items-center">
+                        Existencia
+                        <p-sortIcon field="existencia"></p-sortIcon>
+                    </div>
+                </th>
+                <th style="width:100px"></th>
+                <th>
+                    Operaciones
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-producto>
+            <tr [classList]="(producto.existencia === 0) ? 'text-red' : ''">
+                <td>
+                    <p-button label="{{producto.codigo_barras}}" styleClass="p-button-link"
+                        (click)="openBarcodeWindow(producto.codigo_barras)">
+                    </p-button>
+                </td>
+                <td style="overflow-wrap: break-word !important;"> {{producto.description}} </td>
+                <td>
+                    {{ conversor(1, producto.id_marca) }}
+                </td>
+                <td >
+                    {{ conversor(2, producto.id_proveedor) }}
+                </td>
+                <td> {{producto.existencia}} </td>
+                <td>
+                    <p-button label="Más info" styleClass="p-button-link"
+                        (click)="showDialog(producto)">
+                    </p-button>
+                </td>
+                <td>
+                    <button pButton pRipple type="button" icon="pi pi-pencil"
+                        class="p-button-rounded p-button-info mx-1"
+                        (click)="showModalEdit(producto, producto.marca, producto.proveedor)">
+                    </button>
+                    <button pButton pRipple type="button" icon="pi pi-times"
+                        (click)="msjConfirm(producto.description, producto.id_producto)"
+                        class="p-button-rounded p-button-danger mx-1">
+                    </button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7">No se encontraron productos.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- MODAL de INFO -->
+<p-dialog header="Más información" [(visible)]="verInfo" [modal]="true" [style]="{width: '50vw'}"
+    [draggable]="false" [resizable]="false" class="text-center">
+    <h2>Comprado: {{ infoAMostrar.comprado || '0' }} </h2>
+    <h2>Anaquel: {{ infoAMostrar.anaquel }}</h2>
+    <h2>Modulo: {{ infoAMostrar.modulo }}</h2>
+    <h2>Stock Minimo: {{ infoAMostrar.stock_minimo  || '0' }}</h2>
+    <h2>Stock Maximo: {{ infoAMostrar.stock_maximo  || '0'}}</h2>
+</p-dialog>
+
+<!-- MODAL para PRODUCTOS -->
+<p-dialog header="{{ ((!esEditar) ? 'Nuevo producto' : 'Editar producto')  | uppercase}}"
+    [(visible)]="verModal" [modal]="true" [style]="{width: '70vw'}"
+    [draggable]="false" [resizable]="false" class="text-center">
+    <form action="" class="grid my-2" [formGroup]="formProductos">
+        <div class="field col-11 md:col-6 mx-auto">
+            <label [style]="{'font-weight': 'bold'}">Codigo barras:</label>
+            <div class="p-inputgroup">
+                <input pInputText pKeyFilter="alphanum" formControlName="codigo_barras" [maxlength]="15" />
+            </div>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <label [style]="{'font-weight': 'bold'}">Nombre:</label>
+            <div class="p-inputgroup">
+                <input pInputText formControlName="description" [pKeyFilter]="alphaNumericS" />
+            </div>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <p-dropdown [options]="marcasDisponibles" 
+                placeholder="Seleccione una Marca" formControlName="id_marca" [showClear]="true"
+                [classList]=" formProductos.controls['id_marca'].valid ? '' : 'ng-invalid ng-dirty'"
+                optionLabel="description" [showClear]="true">
+            </p-dropdown>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <p-dropdown [options]="proveedorDisponibles"
+                placeholder="Seleccione un proveedor" formControlName="id_proveedor"
+                optionLabel="nombre" [showClear]="true">
+            </p-dropdown>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <label [style]="{'font-weight': 'bold'}">Precio compra:</label>
+            <div class="p-inputgroup">
+                <input pInputText pKeyFilter="num" formControlName="precio_compra" />
+            </div>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <label [style]="{'font-weight': 'bold'}">Precio Venta:</label>
+            <div class="p-inputgroup">
+                <input pInputText pKeyFilter="num" formControlName="precio_venta" />
+            </div>
+        </div>
+        <div class="field col-11 md:col-4 mx-auto">
+            <label [style]="{'font-weight': 'bold'}">Stock minimo:</label>
+            <div class="p-inputgroup">
+                <input pInputText pKeyFilter="num" formControlName="stock_minimo" />
+            </div>
+        </div>
+        <div class="field col-11 md:col-4 mx-auto">
+            <label [style]="{'font-weight': 'bold'}">Stock maximo:</label>
+            <div class="p-inputgroup">
+                <input pInputText pKeyFilter="num" formControlName="stock_maximo" />
+            </div>
+        </div>
+        <div class="field col-11 md:col-4 mx-auto">
+            <label [style]="{'font-weight': 'bold'}">Existencia:</label>
+            <div class="p-inputgroup">
+                <input pInputText pKeyFilter="num" formControlName="existencia" />
+            </div>
+        </div>
+        <div class="field col-11 md:col-4 mx-auto">
+            <label [style]="{'font-weight': 'bold'}">Anaquel:</label>
+            <div class="p-inputgroup">
+                <input pInputText pKeyFilter="num" formControlName="anaquel" />
+            </div>
+        </div>
+        <div class="field col-11 md:col-4 mx-auto">
+            <label [style]="{'font-weight': 'bold'}">Modulo:</label>
+            <div class="p-inputgroup">
+                <input pInputText pKeyFilter="num" formControlName="modulo" />
+            </div>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-plus" (click)="agregarProducto()" [hidden]="esEditar"
+            label="Agregar" styleClass="p-button-info">
+        </p-button>
+        <p-button icon="pi pi-check" (click)="editarProducto()" [hidden]="!esEditar"
+            label="Guardar" styleClass="p-button-info">
+        </p-button>
+    </ng-template>
+</p-dialog>
+<!-- ============= TOAST MESSAGE ============= -->
+<p-toast position="bottom-center" [autoZIndex]="true">
+</p-toast>

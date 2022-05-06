@@ -1,0 +1,128 @@
+<h2 class="mx-2">Usuarios</h2>
+<p-table #tablaP [value]="usuarios" dataKey="id"
+        [rows]="3" [showCurrentPageReport]="true" [rowsPerPageOptions]="[3, 6, 12]" [loading]="loading"
+        [resizableColumns]="true" columnResizeMode="expand" styleClass="p-datatable-gridlines" responsiveLayout="scroll"
+        styleClass="p-datatable-gridlines"
+        [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [globalFilterFields]="['nombre','username','id_tipo','id_status', 'create_date']">
+        <ng-template pTemplate="caption">
+            <div class="flex">
+                <button pButton
+                    (click)="[verModal = true, esEditar = false, formUsuarios.reset(), activarValidacion()]"
+                    label="Agregar" class="p-button-submit" icon="pi pi-plus"></button>
+                <!-- <button pButton label="Clear" class="p-button-outlined mx-1" icon="pi pi-filter-slash"></button> -->
+                <span class="p-input-icon-left ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')" placeholder="Buscar..." />
+                </span>
+            </div>
+        </ng-template>
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th pSortableColumn="nombre">
+                <div class="flex justify-content-between align-items-center">
+                    Username
+                    <p-sortIcon field="nombre"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="empresa">
+                <div class="flex justify-content-between align-items-center">
+                    Nombre
+                    <p-sortIcon field="empresa"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="telefono_contacto">
+                <div class="flex justify-content-between align-items-center">
+                    Tipo de usuario
+                    <p-sortIcon field="telefono_contacto"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="telefono_contacto">
+                <div class="flex justify-content-between align-items-center">
+                    Estado
+                    <p-sortIcon field="telefono_contacto"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="email_contacto">
+                <div class="flex justify-content-between align-items-center">
+                    Fecha de creación
+                    <p-sortIcon field="email_contacto"></p-sortIcon>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-usuario>
+        <tr [classList]="(usuario.id_status == 2) ? 'text-red':''">
+            <td> {{ usuario.username }} </td>
+            <td> {{ usuario.nombre }} </td>
+            <td>
+                {{ rolesPlantilla[usuario.id_tipo - 1] || '' | slice:5 }}
+            </td>
+            <td>
+                {{ statusPlantilla[usuario.id_status - 1] || ''  }}
+            </td>
+            <td> {{ usuario.create_date }} </td>
+            <td>
+                <button pButton pRipple type="button" icon="pi pi-pencil"
+                    (click)="abrirModalEditar(usuario)"
+                    class="p-button-rounded p-button-info mx-1">
+                </button>
+                <button pButton pRipple type="button" icon="pi pi-times"
+                    (click)="msjConfirm(usuario.username, usuario.id_usuario)"
+                    class="p-button-rounded p-button-danger mx-1">
+                </button>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="7">No se encontraron Usuarios.</td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<!-- MODAL de Agregar -->
+<p-dialog [header]="(esEditar) ? 'Editar Usuario' : 'Agregar Usuario'"
+    [(visible)]="verModal" [modal]="true" [style]="{width: '50vw'}"
+    [draggable]="false" [resizable]="false" class="text-center">
+    <form action="" class="grid p-fluid py-5" [formGroup]="formUsuarios">
+        <div class="field col-11 md:col-6 mx-auto">
+            <span class="p-float-label">
+                <input pInputText  id="nombre" type="text" formControlName="nombre"> 
+                <label for="nombre">Nombre</label>
+            </span>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <p-dropdown [options]="rolesDisponibles"
+                [emptyMessage]="'No hay roles disponibles'"
+                placeholder="Seleccione un rol" optionLabel="name"
+                formControlName="id_tipo">
+                <ng-template let-rol pTemplate="item">
+                    <div class="rol-item">                        
+                        <div>{{rol.name | slice:5}}</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <span class="p-float-label">
+                <input pInputText  id="username" type="text" formControlName="username"> 
+                <label for="username">Username</label>
+            </span>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <input type="password" pPassword placeholder="Password" formControlName="password"/>
+        </div>
+    </form>
+    <ng-template pTemplate="footer" class="mt-5">
+        <p-button icon="pi pi-plus"  label="Agregar" 
+            (click)="agregarUsuario()" [disabled]="!formUsuarios.valid"
+            styleClass="p-button-info" [hidden]="esEditar">
+        </p-button>
+        <p-button icon="pi pi-check" label="Guardar"
+            (click)="editarUsuario()" [disabled]="!formUsuarios.valid"
+            styleClass="p-button-info" [hidden]="!esEditar">
+        </p-button>
+    </ng-template>
+</p-dialog>

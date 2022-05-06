@@ -1,0 +1,18 @@
+
+### Obtencion de todos los creditos de la db
+GET http://192.168.10.40/sinve_api/creditos
+
+### Obtencion de todos los abonos de la db
+GET http://192.168.10.40/sinve_api/abono?credito=2
+
+### Abonar un credito
+POST http://192.168.10.40/sinve_api/abonar
+
+{
+    "id_credito": 2,
+    "id_usuario": 1,
+    "id_venta": 33,
+    "fecha_abono": "2018-01-01 10:45:00",
+    "saldo": 3800,
+    "abono": 3800
+}

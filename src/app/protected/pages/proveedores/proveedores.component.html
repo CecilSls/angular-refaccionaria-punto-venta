@@ -1,0 +1,124 @@
+<h2 class="mx-1">Proveedores</h2>
+<p-table #tablaP [value]="proveedores" dataKey="id"
+        [rows]="5" [showCurrentPageReport]="true" [rowsPerPageOptions]="[5, 10, 15]" [loading]="loading"        
+        [resizableColumns]="true" columnResizeMode="expand" styleClass="p-datatable-gridlines" responsiveLayout="scroll"
+        styleClass="p-datatable-gridlines"
+        [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [globalFilterFields]="['nombre','empresa','telefono_contacto','email_contacto']">
+        <ng-template pTemplate="caption">
+            <div class="flex">
+                <button pButton (click)="[modalAgregar = true, esEditar = false, formProveedor.reset()]"
+                    label="Agregar" class="p-button-submit" icon="pi pi-plus"></button>
+                <!-- <button pButton label="Clear" class="p-button-outlined mx-1" icon="pi pi-filter-slash"></button> -->
+                <span class="p-input-icon-left ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')" placeholder="Search keyword" />
+                </span>
+            </div>
+        </ng-template>
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th pSortableColumn="nombre">
+                <div class="flex justify-content-between align-items-center">
+                    Nombre
+                    <p-sortIcon field="nombre"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="empresa">
+                <div class="flex justify-content-between align-items-center">
+                    Empresa
+                    <p-sortIcon field="empresa"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="telefono_contacto">
+                <div class="flex justify-content-between align-items-center">
+                    Telefono
+                    <p-sortIcon field="telefono_contacto"></p-sortIcon>
+                </div>
+            </th>
+            <th pSortableColumn="email_contacto">
+                <div class="flex justify-content-between align-items-center">
+                    Email
+                    <p-sortIcon field="email_contacto"></p-sortIcon>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-proveedor>
+        <tr>
+            <td>
+                {{ proveedor.nombre }}
+            </td>
+            <td>
+                {{ proveedor.empresa }}
+            </td>
+            <td>
+                {{ proveedor.telefono_contacto }}
+            </td>
+            <td>
+                {{ proveedor.email_contacto }}
+            </td>
+            <td>
+                <button pButton pRipple type="button" icon="pi pi-pencil"
+                    (click)="abrirModalEditar(proveedor)"
+                    class="p-button-rounded p-button-info mx-1">
+                </button>
+                <button pButton pRipple type="button" icon="pi pi-times"
+                    (click)="msjConfirm(proveedor.nombre, proveedor.id_proveedor)"
+                    class="p-button-rounded p-button-danger mx-1">
+                </button>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="7">No se encontraron proveedores.</td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<!-- MODAL de Agregar -->
+<p-dialog [header]="(esEditar) ? 'Editar proveedor' : 'Agregar proveedor'"
+    [(visible)]="modalAgregar" [modal]="true" [style]="{width: '50vw'}"
+    [draggable]="false" [resizable]="false" class="text-center">
+    <form action="" class="grid p-fluid pt-4" [formGroup]="formProveedor">
+        <div class=" col-11 md:col-6 mx-auto">
+            <span class="p-float-label">
+                <input pInputText  id="nombre" type="text" formControlName="nombre"> 
+                <label for="nombre">Nombre</label>
+            </span>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <span class="p-float-label">
+                <input pInputText  id="empresa" type="text" formControlName="empresa"> 
+                <label for="empresa">Empresa</label>
+            </span>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <span class="p-float-label">
+                <input pInputText  id="telefono" type="text" formControlName="telefono_contacto"> 
+                <label for="telefono">Telefono</label>
+            </span>
+        </div>
+        <div class="field col-11 md:col-6 mx-auto">
+            <span class="p-float-label">
+                <input pInputText  id="email" type="text" formControlName="email_contacto"> 
+                <label for="email">Email</label>
+            </span>
+        </div>
+    </form>
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-plus"  label="Agregar" 
+            (onClick)="agregarProveedor()" [disabled]="formProveedor.invalid"
+            styleClass="p-button-info" [hidden]="esEditar">
+        </p-button>
+        <p-button icon="pi pi-check" label="Guardar"
+            (onClick)="editarProveedor()" [disabled]="formProveedor.invalid"
+            styleClass="p-button-info" [hidden]="!esEditar">
+        </p-button>
+    </ng-template>
+</p-dialog>
+<!-- ============= TOAST MESSAGE ============= -->
+<p-toast position="bottom-center" [autoZIndex]="true">
+</p-toast>
